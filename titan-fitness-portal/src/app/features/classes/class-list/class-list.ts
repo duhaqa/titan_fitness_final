@@ -1,9 +1,43 @@
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { EntityFormComponent } from '../../../shared/components/entity-form/entity-form';
 
+// ==========================================
+// 1. تعريف واجهة الباك إند والخدمة (ClassService)
+// ==========================================
+export interface FitnessClass {
+  id: string;
+  title: string;
+  trainerName: string;
+  studio: string;
+  capacity: number;
+  bookedSeats: number;
+  startTime: string;
+  endTime: string;
+  status: 'Upcoming' | 'In Progress' | 'Completed';
+}
+
+@Injectable({ providedIn: 'root' })
+export class ClassService {
+  private apiUrl = 'https://localhost:7123/api/Classes';
+
+  constructor(private http: HttpClient) {}
+
+  getClasses(): Observable<FitnessClass[]> {
+    return this.http.get<FitnessClass[]>(this.apiUrl);
+  }
+
+  addClass(fitnessClass: Partial<FitnessClass>): Observable<FitnessClass> {
+    return this.http.post<FitnessClass>(this.apiUrl, fitnessClass);
+  }
+}
+
+// ==========================================
+// 2. الواجهات المحلية للمكون (ClassListComponent)
+// ==========================================
 export interface ClassSession {
   id: string;
   time: string;
@@ -42,6 +76,7 @@ export class ClassListComponent implements OnInit {
   selectedStudio: string = 'All';
 
   showAddClassForm: boolean = false;
+  isLoading: boolean = false;
 
   weekDays: DayTab[] = [
     { dayName: 'Mon', dateText: 'Oct 23', fullDate: '2023-10-23' },
@@ -56,61 +91,30 @@ export class ClassListComponent implements OnInit {
   trainers: string[] = ['All', 'Sarah Jenkins', 'Marcus Vance', 'David Miller'];
   studios: string[] = ['All', 'Studio A (HIIT)', 'Studio B (Yoga)', 'Cycling Zone'];
 
-  classes: ClassSession[] = [
-    {
-      id: 'c1',
-      time: '07:00 AM',
-      duration: '45 min',
-      title: 'Morning Flow Yoga',
-      category: 'Flexibility',
-      trainer: 'Sarah Jenkins',
-      studio: 'Studio B (Yoga)',
-      bookedSeats: 15,
-      totalSeats: 15,
-      status: 'Completed'
+  classes: ClassSession[] = [];
+
+  constructor(private classService: ClassService) {}
+
+  ngOnInit(): void {
+  console.log('ClassListComponent initialized!');
+  this.loadClassesFromApi();
+}
+
+loadClassesFromApi(): void {
+  console.log('Sending GET request to API...');
+  this.isLoading = true;
+  this.classService.getClasses().subscribe({
+    next: (data) => {
+      console.log('Data received from API:', data);
+      this.classes = data.map(apiItem => this.mapApiToClassSession(apiItem));
+      this.isLoading = false;
     },
-    {
-      id: 'c2',
-      time: '09:30 AM',
-      duration: '60 min',
-      title: 'HIIT & Endurance',
-      category: 'Cardio',
-      trainer: 'Marcus Vance',
-      studio: 'Studio A (HIIT)',
-      bookedSeats: 12,
-      totalSeats: 15,
-      status: 'In Progress'
-    },
-    {
-      id: 'c3',
-      time: '05:00 PM',
-      duration: '45 min',
-      title: 'Spin & RPM Cycle',
-      category: 'Cycling',
-      trainer: 'David Miller',
-      studio: 'Cycling Zone',
-      bookedSeats: 8,
-      totalSeats: 20,
-      status: 'Upcoming'
-    },
-    {
-      id: 'c4',
-      time: '06:30 PM',
-      duration: '60 min',
-      title: 'Power Weightlifting',
-      category: 'Strength',
-      trainer: 'Marcus Vance',
-      studio: 'Studio A (HIIT)',
-      bookedSeats: 5,
-      totalSeats: 12,
-      status: 'Upcoming'
+    error: (err: any) => {
+      console.error('Error in API call:', err);
+      this.isLoading = false;
     }
-  ];
-
-  constructor() {}
-
-  ngOnInit(): void {}
-
+  });
+}
   selectDay(day: DayTab): void {
     this.selectedDate = day.fullDate;
   }
@@ -149,38 +153,46 @@ export class ClassListComponent implements OnInit {
   }
 
   onClassSaved(data: any): void {
-    const newClass: ClassSession = {
-      id: 'c' + Date.now(),
-      time: data.time || '09:00 AM',
-      duration: data.duration || '60 min',
+    const payload: Partial<FitnessClass> = {
       title: data.title || 'New Class',
-      category: data.category || 'General',
-      trainer: data.trainer || 'Unassigned',
+      trainerName: data.trainer || 'Unassigned',
       studio: data.studio || 'Main Studio',
+      capacity: Number(data.totalSeats) || 20,
       bookedSeats: Number(data.bookedSeats) || 0,
-      totalSeats: Number(data.totalSeats) || 20,
+      startTime: data.time || '09:00 AM',
+      endTime: data.duration || '60 min',
       status: data.status || 'Upcoming'
     };
 
-    this.classes.unshift(newClass);
+    this.classService.addClass(payload).subscribe({
+      next: (createdApiClass: FitnessClass) => {
+        const newSession = this.mapApiToClassSession(createdApiClass);
+        this.classes.unshift(newSession);
 
-    if (
-      newClass.trainer &&
-      newClass.trainer !== 'Unassigned' &&
-      !this.trainers.includes(newClass.trainer)
-    ) {
-      this.trainers.push(newClass.trainer);
-    }
+        if (
+          newSession.trainer &&
+          newSession.trainer !== 'Unassigned' &&
+          !this.trainers.includes(newSession.trainer)
+        ) {
+          this.trainers.push(newSession.trainer);
+        }
 
-    if (
-      newClass.studio &&
-      newClass.studio !== 'Main Studio' &&
-      !this.studios.includes(newClass.studio)
-    ) {
-      this.studios.push(newClass.studio);
-    }
+        if (
+          newSession.studio &&
+          newSession.studio !== 'Main Studio' &&
+          !this.studios.includes(newSession.studio)
+        ) {
+          this.studios.push(newSession.studio);
+        }
 
-    this.showAddClassForm = false;
+        this.showAddClassForm = false;
+      },
+      // تم تحديد نوع err صراحة لتفادي خطأ TypeScript
+      error: (err: any) => {
+        console.error('حدث خطأ أثناء حفظ الحصة في الباك إند:', err);
+        alert('فشل حفظ الحصة في السيرفر. تحقق من الاتصال أو البيانات.');
+      }
+    });
   }
 
   onClassFormCancelled(): void {
@@ -193,5 +205,20 @@ export class ClassListComponent implements OnInit {
 
   onViewAttendees(cls: ClassSession): void {
     console.log('View attendees for class:', cls.title);
+  }
+
+  private mapApiToClassSession(apiItem: FitnessClass): ClassSession {
+    return {
+      id: apiItem.id,
+      title: apiItem.title,
+      trainer: apiItem.trainerName,
+      studio: apiItem.studio,
+      totalSeats: apiItem.capacity,
+      bookedSeats: apiItem.bookedSeats,
+      time: apiItem.startTime,
+      duration: apiItem.endTime,
+      category: 'General',
+      status: apiItem.status
+    };
   }
 }
