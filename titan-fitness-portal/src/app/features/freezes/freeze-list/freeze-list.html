@@ -1,0 +1,81 @@
+<div class="freezes-container">
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Membership Freezes</h1>
+      <p class="page-subtitle">Manage member subscription pause requests and hold durations.</p>
+    </div>
+  </div>
+
+  <!-- Filter & Search Section -->
+  <div class="filter-bar card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search member, ID, or reason..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+
+    <div class="dropdown-filter">
+      <select [(ngModel)]="selectedStatus">
+        <option value="All">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Freezes Table Card -->
+  <div class="card table-card">
+    <table class="freezes-table">
+      <thead>
+        <tr>
+          <th>Request ID</th>
+          <th>Member Name</th>
+          <th>Membership</th>
+          <th>Freeze Period</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of filteredFreezes">
+          <td class="id-col">{{ item.id }}</td>
+          <td class="member-name">{{ item.memberName }}</td>
+          <td>{{ item.membershipType }}</td>
+          <td>
+            <div class="date-range">
+              <span>📅 {{ item.startDate }}</span>
+              <span class="date-sep">to</span>
+              <span>{{ item.endDate }}</span>
+            </div>
+          </td>
+          <td>{{ item.reason }}</td>
+          <td>
+            <span
+              class="status-badge"
+              [class.status-pending]="item.status === 'Pending'"
+              [class.status-approved]="item.status === 'Approved'"
+              [class.status-rejected]="item.status === 'Rejected'"
+            >
+              {{ item.status }}
+            </span>
+          </td>
+          <td>
+            <div *ngIf="item.status === 'Pending'" class="action-buttons">
+              <button class="btn-approve" (click)="approveRequest(item)">Approve</button>
+              <button class="btn-reject" (click)="rejectRequest(item)">Reject</button>
+            </div>
+            <span *ngIf="item.status !== 'Pending'" class="no-action">-</span>
+          </td>
+        </tr>
+        <tr *ngIf="filteredFreezes.length === 0">
+          <td colspan="7" class="no-results">No membership freeze requests found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

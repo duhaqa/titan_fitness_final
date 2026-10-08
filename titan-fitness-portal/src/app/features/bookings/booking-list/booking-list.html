@@ -1,0 +1,76 @@
+<div class="bookings-container">
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Booking Records</h1>
+      <p class="page-subtitle">Track and manage class bookings and member attendance.</p>
+    </div>
+  </div>
+
+  <!-- Filters & Search Bar -->
+  <div class="filter-bar card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search member, class, or booking ID..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+
+    <div class="dropdown-filter">
+      <select [(ngModel)]="selectedStatus">
+        <option value="All">All Statuses</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Attended">Attended</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Bookings Table -->
+  <div class="card table-card">
+    <table class="bookings-table">
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Member Name</th>
+          <th>Class Name</th>
+          <th>Booking Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of filteredBookings">
+          <td class="id-col" [innerHTML]="item.id | searchHighlight: searchTerm"></td>
+          <td [innerHTML]="item.memberName | searchHighlight: searchTerm"></td>
+          <td [innerHTML]="item.className | searchHighlight: searchTerm"></td>
+          <td>{{ item.bookingDate }}</td>
+          <td>
+            <span
+              class="status-badge"
+              [class.status-confirmed]="item.status === 'Confirmed'"
+              [class.status-attended]="item.status === 'Attended'"
+              [class.status-cancelled]="item.status === 'Cancelled'"
+            >
+              {{ item.status }}
+            </span>
+          </td>
+          <td>
+            <button
+              *ngIf="item.status === 'Confirmed'"
+              class="btn-cancel-action"
+              (click)="cancelBooking(item)"
+            >
+              Cancel
+            </button>
+            <span *ngIf="item.status !== 'Confirmed'" class="no-action">-</span>
+          </td>
+        </tr>
+        <tr *ngIf="filteredBookings.length === 0">
+          <td colspan="6" class="no-results">No booking records found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

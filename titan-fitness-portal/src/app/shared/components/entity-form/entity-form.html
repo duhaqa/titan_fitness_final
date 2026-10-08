@@ -1,0 +1,249 @@
+<div class="form-overlay">
+  <div class="form-card">
+
+    <div class="form-header">
+      <h2>{{ title }}</h2>
+      <button type="button" class="close-btn" (click)="cancel()">×</button>
+    </div>
+
+    <form (ngSubmit)="save()">
+
+      @if (type === 'member') {
+        <div class="form-group">
+          <label>Full Name</label>
+          <input
+            type="text"
+            name="memberName"
+            [(ngModel)]="formData.name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Member Code</label>
+          <input
+            type="text"
+            name="memberCode"
+            [(ngModel)]="formData.memberCode"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Branch</label>
+          <input
+            type="text"
+            name="branch"
+            [(ngModel)]="formData.branch"
+          />
+        </div>
+      }
+
+      @if (type === 'trainer') {
+        <div class="form-group">
+          <label>Full Name</label>
+          <input
+            type="text"
+            name="trainerName"
+            [(ngModel)]="formData.name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Specialty</label>
+          <select
+            name="specialty"
+            [(ngModel)]="formData.specialty"
+            required
+          >
+            <option value="">Select Specialty</option>
+            <option value="HIIT & Strength">HIIT & Strength</option>
+            <option value="Yoga & Pilates">Yoga & Pilates</option>
+            <option value="Spin & Cycling">Spin & Cycling</option>
+            <option value="Boxing & Combat">Boxing & Combat</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Rating</label>
+          <input
+            type="number"
+            name="rating"
+            [(ngModel)]="formData.rating"
+            min="0"
+            max="5"
+            step="0.1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Review Count</label>
+          <input
+            type="number"
+            name="reviewCount"
+            [(ngModel)]="formData.reviewCount"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Weekly Classes</label>
+          <input
+            type="number"
+            name="weeklyClasses"
+            [(ngModel)]="formData.weeklyClasses"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select
+            name="trainerStatus"
+            [(ngModel)]="formData.status"
+          >
+            <option value="Active">Active</option>
+            <option value="On Leave">On Leave</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            name="trainerEmail"
+            [(ngModel)]="formData.email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Phone</label>
+          <input
+            type="text"
+            name="trainerPhone"
+            [(ngModel)]="formData.phone"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Avatar URL</label>
+          <input
+            type="text"
+            name="avatarUrl"
+            [(ngModel)]="formData.avatarUrl"
+            placeholder="https://..."
+          />
+        </div>
+      }
+
+     @if (type === 'class') {
+  <div class="form-group">
+    <label>Class Name</label>
+    <input
+      type="text"
+      name="classTitle"
+      [(ngModel)]="formData.title"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Time</label>
+    <input
+      type="text"
+      name="classTime"
+      [(ngModel)]="formData.time"
+      placeholder="09:00 AM"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Duration</label>
+    <input
+      type="text"
+      name="classDuration"
+      [(ngModel)]="formData.duration"
+      placeholder="60 min"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Category</label>
+    <input
+      type="text"
+      name="category"
+      [(ngModel)]="formData.category"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Trainer</label>
+    <input
+      type="text"
+      name="classTrainer"
+      [(ngModel)]="formData.trainer"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Studio</label>
+    <input
+      type="text"
+      name="studio"
+      [(ngModel)]="formData.studio"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Booked Seats</label>
+    <input
+      type="number"
+      name="bookedSeats"
+      [(ngModel)]="formData.bookedSeats"
+      min="0"
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Total Seats</label>
+    <input
+      type="number"
+      name="totalSeats"
+      [(ngModel)]="formData.totalSeats"
+      min="1"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Status</label>
+    <select
+      name="classStatus"
+      [(ngModel)]="formData.status"
+    >
+      <option value="Upcoming">Upcoming</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+}
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" (click)="cancel()">
+          Cancel
+        </button>
+
+        <button type="submit" class="save-btn">
+          Save
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>

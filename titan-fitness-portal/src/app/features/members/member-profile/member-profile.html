@@ -1,0 +1,128 @@
+<div class="profile-container">
+  <!-- Top Navigation Bar -->
+  <div class="top-nav">
+    <button class="back-link" (click)="onBackToList()">
+      ← Back to Member Directory
+    </button>
+    <button class="edit-link" (click)="onEditProfile()">Edit Profile</button>
+  </div>
+
+  <h1 class="page-title">Member Profile</h1>
+
+  <div class="profile-grid">
+    <!-- Left Column -->
+    <div class="grid-left">
+      <!-- Member Main Info Card -->
+      <div class="card info-card">
+        <div class="status-pill-container">
+          <span class="status-pill status-active">• {{ member.status }}</span>
+        </div>
+        
+        <div class="avatar-placeholder">
+          <span *ngIf="!member.avatarUrl" class="avatar-icon">👤</span>
+          <img *ngIf="member.avatarUrl" [src]="member.avatarUrl" [alt]="member.name" />
+        </div>
+
+        <h2 class="member-name">{{ member.name }}</h2>
+        <p class="member-id">ID: {{ member.memberCode }}</p>
+
+        <div class="details-list">
+          <div class="detail-item">
+            <span class="detail-icon">✉️</span>
+            <span>{{ member.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">📞</span>
+            <span>{{ member.phone }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">📍</span>
+            <span>{{ member.address }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">📅</span>
+            <span>Joined: {{ member.joinedDate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Plan Card -->
+      <div class="card plan-card mt-4">
+        <div class="plan-header">
+          <span class="plan-label">Current Plan</span>
+          <span class="plan-icon">⚙️</span>
+        </div>
+
+        <div class="plan-body">
+          <div class="plan-title-row">
+            <h3 class="plan-name">{{ member.planName }}</h3>
+            <div class="plan-price">
+              <span class="amount">${{ member.planPrice }}</span>
+              <span class="cycle">/{{ member.planBillingCycle }}</span>
+            </div>
+          </div>
+          <p class="renews-text">Renews {{ member.planRenewalDate }}</p>
+
+          <button class="freeze-btn" (click)="onFreezeMembership()">
+            Freeze Membership
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="grid-right">
+      <!-- Quota Indicators Row -->
+      <div class="quotas-row">
+        <!-- Freezes Used -->
+        <div class="card quota-card">
+          <div class="quota-header">
+            <span class="quota-title">❄️ Freezes Used</span>
+            <span class="quota-count">{{ member.freezesUsed }}/{{ member.freezesTotal }}</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" [style.width.%]="getFreezePercentage()"></div>
+          </div>
+          <p class="quota-subtext">{{ getFreezesRemaining() }} freeze remaining</p>
+        </div>
+
+        <!-- Guest Passes Used -->
+        <div class="card quota-card">
+          <div class="quota-header">
+            <span class="quota-title">👥 Guest Passes</span>
+            <span class="quota-count">{{ member.guestPassesUsed }}/{{ member.guestPassesTotal }}</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" [style.width.%]="getGuestPassPercentage()"></div>
+          </div>
+          <p class="quota-subtext">{{ getGuestPassesRemaining() }} passes remaining</p>
+        </div>
+      </div>
+
+      <!-- Recent Activity Section -->
+      <div class="card activity-card mt-4">
+        <div class="activity-header">
+          <h3>Recent Activity</h3>
+          <button class="view-all-btn" (click)="onViewAllActivity()">View All</button>
+        </div>
+
+        <div class="activity-list">
+          <div *ngFor="let item of member.recentActivities" class="activity-item">
+            <div class="activity-icon-wrapper">
+              <span *ngIf="item.type === 'check-in'">🚪</span>
+              <span *ngIf="item.type === 'class'">🏋️</span>
+            </div>
+            <div class="activity-content">
+              <h4>{{ item.title }}</h4>
+              <p>{{ item.subtitle }}</p>
+            </div>
+            <div class="activity-time">
+              <span class="date">{{ item.date }}</span>
+              <span class="time">{{ item.time }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

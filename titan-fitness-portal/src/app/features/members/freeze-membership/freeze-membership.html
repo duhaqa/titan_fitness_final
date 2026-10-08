@@ -1,0 +1,135 @@
+<div class="freeze-container">
+  <!-- Top Navigation & Header -->
+  <div class="top-nav">
+    <button class="back-link" (click)="onBackToProfile()">
+      ← Back to Member Profile
+    </button>
+  </div>
+
+  <div class="header-section">
+    <h1 class="page-title">Freeze Membership</h1>
+    <p class="page-subtitle">Temporarily suspend a membership contract.</p>
+  </div>
+
+  <!-- Member Highlight Banner -->
+  <div class="card member-banner">
+    <div class="banner-avatar">👤</div>
+    <div class="banner-info">
+      <div class="banner-header">
+        <h2 class="member-name">{{ member.name }}</h2>
+        <span class="status-badge">{{ member.status }}</span>
+      </div>
+      <p class="member-meta">
+        ID: {{ member.memberCode }} • {{ member.planName }}
+      </p>
+      <p class="end-date-meta">
+        Current End Date: {{ member.currentEndDate | date:'MMM dd, yyyy' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Main Grid Layout -->
+  <div class="freeze-grid">
+    <!-- Left Column: Parameters Form -->
+    <div class="card form-card">
+      <h3 class="section-title">Freeze Parameters</h3>
+
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        <input
+          type="date"
+          class="form-input"
+          [(ngModel)]="startDate"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Duration (Months)</label>
+        <div class="duration-options">
+          <button
+            type="button"
+            class="duration-btn"
+            [class.active]="selectedDurationMonths === 1"
+            (click)="selectDuration(1)"
+          >
+            1 Month
+          </button>
+          <button
+            type="button"
+            class="duration-btn"
+            [class.active]="selectedDurationMonths === 2"
+            (click)="selectDuration(2)"
+          >
+            2 Months
+          </button>
+          <button
+            type="button"
+            class="duration-btn"
+            [class.active]="selectedDurationMonths === 3"
+            (click)="selectDuration(3)"
+          >
+            3 Months
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Reason for Freeze</label>
+        <select class="form-select" [(ngModel)]="selectedReason">
+          <option *ngFor="let reason of reasons" [value]="reason">
+            {{ reason }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Additional Notes (Optional)</label>
+        <textarea
+          class="form-textarea"
+          rows="4"
+          placeholder="Enter any relevant details..."
+          [(ngModel)]="additionalNotes"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Right Column: Impact Summary -->
+    <div class="right-column">
+      <div class="card impact-card">
+        <h3 class="impact-title">
+          <span class="icon">📊</span> Projected Impact
+        </h3>
+
+        <div class="impact-details">
+          <div class="impact-row">
+            <span class="impact-label">Original End Date</span>
+            <span class="impact-value">{{ member.currentEndDate | date:'MMM dd, yyyy' }}</span>
+          </div>
+
+          <div class="impact-row">
+            <span class="impact-label">Freeze Duration</span>
+            <span class="impact-value">{{ selectedDurationMonths }} Months</span>
+          </div>
+
+          <div class="new-date-box">
+            <span class="box-label">New End Date</span>
+            <span class="box-value">{{ calculatedNewEndDate | date:'MMM dd, yyyy' }}</span>
+          </div>
+        </div>
+
+        <p class="disclaimer-text">
+          * Billing will automatically pause during the freeze period and resume upon reactivation.
+        </p>
+
+        <div class="action-buttons">
+          <button class="btn btn-confirm" (click)="onConfirmFreeze()">
+            Confirm Freeze
+          </button>
+          <button class="btn btn-cancel" (click)="onCancel()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

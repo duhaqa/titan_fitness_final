@@ -1,0 +1,118 @@
+```html
+<div class="schedule-container">
+  <!-- Header Title & Action -->
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Class Schedule</h1>
+      <p class="page-subtitle">Manage daily fitness classes and member bookings.</p>
+    </div>
+    <button class="btn-primary" (click)="onAddClass()">+ Schedule New Class</button>
+  </div>
+
+  <!-- Date Selector Tabs -->
+  <div class="date-tabs">
+    <button
+      *ngFor="let day of weekDays"
+      class="tab-item"
+      [class.active]="selectedDate === day.fullDate"
+      (click)="selectDay(day)"
+    >
+      <span class="day-name">{{ day.dayName }}</span>
+      <span class="date-text">{{ day.dateText }}</span>
+    </button>
+  </div>
+
+  <!-- Filters & Summary Bar -->
+  <div class="filter-bar card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search class or trainer..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+
+    <div class="dropdown-filters">
+      <select [(ngModel)]="selectedTrainer">
+        <option *ngFor="let t of trainers" [value]="t">Trainer: {{ t }}</option>
+      </select>
+
+      <select [(ngModel)]="selectedStudio">
+        <option *ngFor="let s of studios" [value]="s">Studio: {{ s }}</option>
+      </select>
+    </div>
+
+    <div class="quick-stats">
+      <span class="stat-tag"><strong>{{ totalClassesToday }}</strong> Classes Today</span>
+      <span class="stat-tag"><strong>{{ totalAvailableSeats }}</strong> Seats Free</span>
+    </div>
+  </div>
+
+  <!-- Class Schedule List -->
+  <div class="class-list">
+    <div *ngFor="let cls of filteredClasses" class="card class-card">
+      <div class="time-column">
+        <span class="time-text">{{ cls.time }}</span>
+        <span class="duration-text">{{ cls.duration }}</span>
+      </div>
+
+      <div class="class-info">
+        <div class="title-row">
+          <h3 class="class-title">{{ cls.title }}</h3>
+          <span
+            class="status-badge"
+            [class.status-upcoming]="cls.status === 'Upcoming'"
+            [class.status-progress]="cls.status === 'In Progress'"
+            [class.status-completed]="cls.status === 'Completed'"
+          >
+            {{ cls.status }}
+          </span>
+        </div>
+
+        <div class="meta-row">
+          <span>🏋️ {{ cls.trainer }}</span>
+          <span>📍 {{ cls.studio }}</span>
+          <span>🏷️ {{ cls.category }}</span>
+        </div>
+
+        <!-- Progress Bar for Occupancy -->
+        <div class="occupancy-section">
+          <div class="occupancy-text">
+            <span>Occupancy</span>
+            <span><strong>{{ cls.bookedSeats }}</strong>/{{ cls.totalSeats }} Seats</span>
+          </div>
+          <div class="progress-bg">
+            <div
+              class="progress-fill"
+              [style.width.%]="(cls.bookedSeats / cls.totalSeats) * 100"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-column">
+        <button
+          *ngIf="cls.status !== 'Completed'"
+          class="btn-secondary"
+          [disabled]="cls.bookedSeats >= cls.totalSeats"
+          (click)="onBookMember(cls)"
+        >
+          {{ cls.bookedSeats >= cls.totalSeats ? 'Full' : 'Book Member' }}
+        </button>
+
+        <button class="btn-outline" (click)="onViewAttendees(cls)">
+          View Attendees
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Class Form -->
+<app-entity-form
+  *ngIf="showAddClassForm"
+  type="class"
+  (saved)="onClassSaved($event)"
+  (cancelled)="onClassFormCancelled()"
+></app-entity-form>

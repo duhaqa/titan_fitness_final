@@ -1,0 +1,109 @@
+<div class="class-form-card">
+  <div class="form-header">
+    <h2 class="form-title">{{ formData.id ? 'Edit Fitness Class' : 'Create New Fitness Class' }}</h2>
+    <p class="form-subtitle">Fill in the class details, capacity, and instructor assignments.</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #classForm="ngForm">
+    <div class="form-grid">
+      <!-- Class Name -->
+      <div class="form-group col-span-2">
+        <label for="className">Class Name *</label>
+        <input
+          type="text"
+          id="className"
+          [(ngModel)]="formData.className"
+          name="className"
+          placeholder="e.g. Morning Power Yoga"
+          required
+        />
+      </div>
+
+      <!-- Instructor/Trainer -->
+      <div class="form-group">
+        <label for="trainerName">Trainer / Instructor *</label>
+        <select
+          id="trainerName"
+          [(ngModel)]="formData.trainerName"
+          name="trainerName"
+          required
+        >
+          <option value="" disabled selected>-- Select Trainer --</option>
+          <option *ngFor="let t of trainers" [value]="t.name">{{ t.name }}</option>
+        </select>
+      </div>
+
+      <!-- Maximum Capacity -->
+      <div class="form-group">
+        <label for="capacity">Capacity (Max Persons) *</label>
+        <input
+          type="number"
+          id="capacity"
+          [(ngModel)]="formData.capacity"
+          name="capacity"
+          min="1"
+          required
+        />
+      </div>
+
+      <!-- Schedule Time -->
+      <div class="form-group">
+        <label for="scheduleTime">Schedule Time *</label>
+        <input
+          type="text"
+          id="scheduleTime"
+          [(ngModel)]="formData.scheduleTime"
+          name="scheduleTime"
+          placeholder="e.g. Mon, Wed 08:00 AM"
+          required
+        />
+      </div>
+
+      <!-- Studio / Room -->
+      <div class="form-group">
+        <label for="roomNumber">Studio / Room</label>
+        <input
+          type="text"
+          id="roomNumber"
+          [(ngModel)]="formData.roomNumber"
+          name="roomNumber"
+          placeholder="e.g. Studio A"
+        />
+      </div>
+
+      <!-- Status -->
+      <div class="form-group col-span-2">
+        <label for="status">Class Status *</label>
+        <select
+          id="status"
+          [(ngModel)]="formData.status"
+          name="status"
+          required
+        >
+          <option value="Active">Active</option>
+          <option value="Upcoming">Upcoming</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group col-span-2">
+        <label for="description">Description (Optional)</label>
+        <textarea
+          id="description"
+          rows="3"
+          [(ngModel)]="formData.description"
+          name="description"
+          placeholder="Enter class objectives or equipment requirements..."
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Saving...' : (formData.id ? 'Update Class' : 'Save Class') }}
+      </button>
+    </div>
+  </form>
+</div>

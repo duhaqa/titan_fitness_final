@@ -1,0 +1,103 @@
+<div class="dashboard-container">
+  <!-- Title and Header Subtitle -->
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Live floor statistics and quick actions.</p>
+    </div>
+  </header>
+
+  <!-- Main Grid Layout -->
+  <div class="dashboard-grid">
+    <!-- Left Main Column -->
+    <div class="left-column">
+      <!-- KPI Cards Row -->
+      <div class="kpi-row">
+        <!-- Check-ins Today Card -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">CHECK-INS TODAY</span>
+            <span class="kpi-icon">👥</span>
+          </div>
+          <div class="kpi-value">{{ checkInsToday }}</div>
+          <div class="kpi-meta text-success">{{ checkInsPercentage }}</div>
+        </div>
+
+        <!-- Active Members Card -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">ACTIVE MEMBERS</span>
+            <span class="kpi-icon">📊</span>
+          </div>
+          <div class="kpi-value">{{ activeMembersCount | number }}</div>
+          <div class="kpi-meta text-muted">{{ activeMembersNote }}</div>
+        </div>
+      </div>
+
+      <!-- Upcoming Classes Section -->
+      <div class="section-card mt-4">
+        <div class="section-header">
+          <h2>Upcoming Classes</h2>
+          <a routerLink="/classes" class="link-btn">View Schedule</a>
+        </div>
+
+        <div class="class-list">
+          <div *ngFor="let cls of upcomingClasses" class="class-item">
+            <div class="class-time">{{ cls.time }}</div>
+            <div class="class-info">
+              <div class="class-title">{{ cls.title }}</div>
+              <div class="class-details">{{ cls.studio }} • {{ cls.trainer }}</div>
+            </div>
+            <div class="class-capacity">
+              {{ cls.enrolledCount }}/{{ cls.totalCapacity }} Enrolled
+            </div>
+            <div class="class-status">
+              <span class="badge" [ngClass]="{
+                'badge-active': cls.status === 'Active',
+                'badge-upcoming': cls.status === 'Upcoming'
+              }">
+                {{ cls.status }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side Column: Quick Actions -->
+    <div class="right-column">
+      <div class="section-card">
+        <h2 class="section-title">Quick Actions</h2>
+        
+        <div class="quick-actions-list">
+          <!-- Action Item: New Member -->
+          <div class="action-card" (click)="onNewMember()">
+            <div class="action-icon">👤+</div>
+            <div class="action-content">
+              <h3>New Member</h3>
+              <p>Start enrollment process</p>
+            </div>
+          </div>
+
+          <!-- Action Item: Manual Check-in -->
+          <div class="action-card" (click)="onManualCheckIn()">
+            <div class="action-icon">🪪</div>
+            <div class="action-content">
+              <h3>Manual Check-in</h3>
+              <p>Verify member entry</p>
+            </div>
+          </div>
+
+          <!-- Action Item: Register Class -->
+          <div class="action-card" (click)="onRegisterClass()">
+            <div class="action-icon">📅</div>
+            <div class="action-content">
+              <h3>Register Class</h3>
+              <p>Book member into session</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

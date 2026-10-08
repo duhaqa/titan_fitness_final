@@ -1,0 +1,15 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="brand">
+    <span class="logo">⚡</span>
+    <span class="brand-name" *ngIf="!isCollapsed">TITAN</span>
+  </div>
+  <nav class="nav-links">
+    <a *ngFor="let item of navItems" 
+       [routerLink]="item.route" 
+       routerLinkActive="active" 
+       class="nav-item">
+      <span class="icon">{{ item.icon }}</span>
+      <span class="label" *ngIf="!isCollapsed">{{ item.label }}</span>
+    </a>
+  </nav>
+</aside>

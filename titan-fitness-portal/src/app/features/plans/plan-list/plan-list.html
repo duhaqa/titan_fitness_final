@@ -1,0 +1,69 @@
+<div class="plans-container">
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Membership Plans</h1>
+      <p class="page-subtitle">Manage subscription tiers, pricing, and member benefits.</p>
+    </div>
+    <button class="btn-create" (click)="onCreatePlan()">+ Create Plan</button>
+  </div>
+
+  <!-- Search Filter -->
+  <div class="filter-bar card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search membership plans..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+  </div>
+
+  <!-- Plans Details Modal / Section -->
+  <div *ngIf="selectedPlanForDetails" class="details-modal-wrapper">
+    <app-plan-details
+      [plan]="selectedPlanForDetails"
+      (close)="closeDetails()"
+    ></app-plan-details>
+  </div>
+
+  <!-- Plans Grid View -->
+  <div class="plans-grid">
+    <div
+      *ngFor="let item of filteredPlans"
+      class="plan-card"
+      [class.popular-border]="item.isPopular"
+    >
+      <div *ngIf="item.isPopular" class="popular-tag">MOST POPULAR</div>
+      <h3 class="card-plan-name">{{ item.name }}</h3>
+      <p class="card-plan-id">{{ item.id }}</p>
+
+      <div class="card-pricing">
+        <span class="card-price">{{ item.price | currency: item.currency }}</span>
+        <span class="card-duration">/ {{ item.durationMonths === 1 ? 'mo' : item.durationMonths + ' mos' }}</span>
+      </div>
+
+      <p class="card-description">{{ item.description }}</p>
+
+      <div class="card-subscribers">
+        👥 <strong>{{ item.activeSubscribersCount }}</strong> active members
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-card-action" (click)="viewDetails(item)">
+          View Details
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="filteredPlans.length === 0" class="no-results-card card">
+      No membership plans matched your search.
+    </div>
+  </div>
+</div>
+
+<app-plan-form
+  *ngIf="showCreatePlanForm"
+  (saved)="onPlanSaved($event)"
+  (cancelled)="onPlanFormCancelled()"
+></app-plan-form>

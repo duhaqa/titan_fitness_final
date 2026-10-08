@@ -1,0 +1,87 @@
+<div class="trainers-container">
+  <!-- Header Title & Action -->
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Trainer Directory</h1>
+      <p class="page-subtitle">Manage fitness trainers, schedules, and specialties.</p>
+    </div>
+    <button class="btn-primary" (click)="onAddTrainer()">+ Add New Trainer</button>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="filter-bar card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search trainer by name or specialty..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+
+    <div class="dropdown-filter">
+      <select [(ngModel)]="selectedSpecialty">
+        <option *ngFor="let spec of specialties" [value]="spec">
+          Specialty: {{ spec }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Trainers Grid -->
+  <div class="trainers-grid">
+    <div *ngFor="let trainer of filteredTrainers" class="card trainer-card">
+      <div class="card-header">
+        <span
+          class="status-pill"
+          [class.status-active]="trainer.status === 'Active'"
+          [class.status-leave]="trainer.status === 'On Leave'"
+        >
+          • {{ trainer.status }}
+        </span>
+      </div>
+
+      <div class="avatar-wrapper">
+        <span *ngIf="!trainer.avatarUrl" class="avatar-icon">🏋️</span>
+        <img *ngIf="trainer.avatarUrl" [src]="trainer.avatarUrl" [alt]="trainer.name" />
+      </div>
+
+      <h3 class="trainer-name">{{ trainer.name }}</h3>
+      <p class="trainer-specialty">{{ trainer.specialty }}</p>
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-value">★ {{ trainer.rating }}</span>
+          <span class="stat-label">({{ trainer.reviewCount }} reviews)</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">{{ trainer.weeklyClasses }}</span>
+          <span class="stat-label">classes/wk</span>
+        </div>
+      </div>
+
+      <div class="contact-info">
+        <div class="info-row">
+          <span>✉️</span>
+          <span class="truncate">{{ trainer.email }}</span>
+        </div>
+        <div class="info-row">
+          <span>📞</span>
+          <span>{{ trainer.phone }}</span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-outline" (click)="onViewProfile(trainer)">View Profile</button>
+        <button class="btn-secondary" (click)="onAssignClass(trainer)">Assign Class</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-entity-form
+  *ngIf="showAddTrainerForm"
+  type="trainer"
+  (saved)="onTrainerSaved($event)"
+  (cancelled)="onTrainerFormCancelled()"
+></app-entity-form>

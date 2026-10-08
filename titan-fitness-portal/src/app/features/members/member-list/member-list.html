@@ -1,0 +1,106 @@
+
+<div class="page-container" (click)="closeAllMenus()">
+  <!-- Header Title & Action Buttons -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Member Directory</h1>
+      <p class="page-subtitle">Manage and view all registered members.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" (click)="onFilter()">
+        <span class="icon">🔍</span> Filter
+      </button>
+      <button class="btn btn-primary" (click)="onAddMember()">
+        + Add Member
+      </button>
+    </div>
+  </div>
+
+  <!-- Members Data Table -->
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>MEMBER NAME</th>
+          <th>ID</th>
+          <th>STATUS</th>
+          <th>BRANCH</th>
+          <th>LAST VISIT</th>
+          <th class="text-right">ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let member of members">
+          <!-- Member Name & Initials -->
+          <td class="member-cell">
+            <div class="avatar">{{ member.initials }}</div>
+            <span class="member-name">{{ member.name }}</span>
+          </td>
+
+          <!-- Member Code ID -->
+          <td class="code-text">{{ member.memberCode }}</td>
+
+          <!-- Status Badge -->
+          <td>
+            <span
+              class="status-badge"
+              [ngClass]="{
+                'status-active': member.status === 'Active',
+                'status-frozen': member.status === 'Frozen',
+                'status-expired': member.status === 'Expired'
+              }"
+            >
+              • {{ member.status }}
+            </span>
+          </td>
+
+          <!-- Branch -->
+          <td>{{ member.branch }}</td>
+
+          <!-- Last Visit -->
+          <td class="text-muted">{{ member.lastVisit }}</td>
+
+          <!-- Actions Dropdown Menu -->
+          <td class="text-right action-cell">
+            <button
+              class="icon-btn"
+              (click)="toggleActionMenu(member, $event)"
+              aria-label="Actions"
+            >
+              ⋮
+            </button>
+
+            <!-- Dropdown Menu items matching the design -->
+            <div class="action-dropdown" *ngIf="member.showMenu">
+              <button (click)="onViewProfile(member)">View Profile</button>
+              <button (click)="onCheckIn(member)">Check-In</button>
+              <button (click)="onBookClass(member)">Book Class</button>
+              <button (click)="onFreezeMembership(member)">Freeze Membership</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination Footer -->
+    <div class="table-footer">
+      <span class="entries-info"
+        >Showing 1 to {{ members.length }} of {{ totalEntries }} entries</span
+      >
+      <div class="pagination">
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Member Form -->
+<app-entity-form
+  *ngIf="showAddMemberForm"
+  type="member"
+  (saved)="onMemberSaved($event)"
+  (cancelled)="onMemberFormCancelled()"
+></app-entity-form>

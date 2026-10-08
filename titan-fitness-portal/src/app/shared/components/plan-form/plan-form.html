@@ -1,0 +1,171 @@
+<div class="form-overlay">
+  <div class="form-card">
+
+    <div class="form-header">
+      <div>
+        <h2>{{ title }}</h2>
+        <p>{{ isEditMode ? 'Update membership plan details.' : 'Create a new membership plan.' }}</p>
+      </div>
+
+      <button
+        type="button"
+        class="close-btn"
+        (click)="cancel()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label>Plan ID</label>
+      <input
+        type="text"
+        name="planId"
+        [(ngModel)]="formData.id"
+        placeholder="PLN-004"
+        [disabled]="isEditMode"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Plan Name</label>
+      <input
+        type="text"
+        name="planName"
+        [(ngModel)]="formData.name"
+        placeholder="Premium Monthly"
+        required
+      />
+    </div>
+
+    <div class="form-row">
+
+      <div class="form-group">
+        <label>Price</label>
+        <input
+          type="number"
+          name="price"
+          [(ngModel)]="formData.price"
+          min="0"
+          step="0.01"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Currency</label>
+        <select
+          name="currency"
+          [(ngModel)]="formData.currency"
+        >
+          <option value="USD">USD</option>
+          <option value="JOD">JOD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+      <label>Duration (Months)</label>
+      <input
+        type="number"
+        name="durationMonths"
+        [(ngModel)]="formData.durationMonths"
+        min="1"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea
+        name="description"
+        [(ngModel)]="formData.description"
+        rows="4"
+        placeholder="Enter membership plan description..."
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Plan Features</label>
+
+      <div class="feature-input-row">
+        <input
+          type="text"
+          name="featureText"
+          [(ngModel)]="featureText"
+          placeholder="Enter a feature..."
+          (keyup.enter)="addFeature()"
+        />
+
+        <button
+          type="button"
+          class="add-feature-btn"
+          (click)="addFeature()"
+        >
+          + Add
+        </button>
+      </div>
+
+      <div class="features-list" *ngIf="formData.features.length > 0">
+        <div
+          class="feature-item"
+          *ngFor="let feature of formData.features; let i = index"
+        >
+          <span>✓ {{ feature }}</span>
+
+          <button
+            type="button"
+            class="remove-feature-btn"
+            (click)="removeFeature(i)"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Active Subscribers</label>
+      <input
+        type="number"
+        name="activeSubscribersCount"
+        [(ngModel)]="formData.activeSubscribersCount"
+        min="0"
+      />
+    </div>
+
+    <div class="popular-option">
+      <label>
+        <input
+          type="checkbox"
+          name="isPopular"
+          [(ngModel)]="formData.isPopular"
+        />
+        Mark as Most Popular
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="cancel-btn"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="save-btn"
+        (click)="save()"
+      >
+        {{ isEditMode ? 'Save Changes' : 'Create Plan' }}
+      </button>
+    </div>
+
+  </div>
+</div>

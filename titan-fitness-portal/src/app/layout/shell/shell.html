@@ -1,0 +1,11 @@
+<div class="shell-container" [class.collapsed]="isSidebarCollapsed">
+  <app-sidebar [isCollapsed]="isSidebarCollapsed"></app-sidebar>
+  
+  <div class="main-wrapper">
+    <app-navbar (toggleSidebarEvent)="toggleSidebar()"></app-navbar>
+    
+    <main class="content-body">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

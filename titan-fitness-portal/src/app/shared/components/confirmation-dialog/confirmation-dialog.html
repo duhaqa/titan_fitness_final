@@ -1,0 +1,9 @@
+<div class="dialog-overlay" *ngIf="isOpen">
+  <div class="dialog-card">
+    <p>{{ message }}</p>
+    <div class="actions">
+      <button class="btn-cancel" (click)="onResponse(false)">Cancel</button>
+      <button class="btn-confirm" (click)="onResponse(true)">Confirm</button>
+    </div>
+  </div>
+</div>

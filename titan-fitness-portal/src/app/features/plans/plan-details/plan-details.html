@@ -1,0 +1,43 @@
+<div class="plan-details-card" *ngIf="plan">
+  <div class="details-header">
+    <div class="header-title-group">
+      <span *ngIf="plan.isPopular" class="badge-popular">MOST POPULAR</span>
+      <h2 class="plan-name">{{ plan.name }}</h2>
+      <p class="plan-id">ID: {{ plan.id }}</p>
+    </div>
+    <button class="btn-close" (click)="onClose()">✕</button>
+  </div>
+
+  <div class="pricing-section">
+    <span class="price-amount">{{ plan.price | currency: plan.currency }}</span>
+    <span class="price-period">/ {{ plan.durationMonths === 1 ? 'Month' : plan.durationMonths + ' Months' }}</span>
+  </div>
+
+  <p class="plan-description">{{ plan.description }}</p>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <span class="stat-value">{{ plan.activeSubscribersCount }}</span>
+      <span class="stat-label">Active Members</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-value">{{ plan.durationMonths }} Mo</span>
+      <span class="stat-label">Billing Cycle</span>
+    </div>
+  </div>
+
+  <div class="features-section">
+    <h3 class="features-title">Included Features</h3>
+    <ul class="features-list">
+      <li *ngFor="let feat of plan.features">
+        <span class="check-icon">✓</span>
+        <span>{{ feat }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="details-actions">
+    <button class="btn-secondary" (click)="onClose()">Back to List</button>
+    <button class="btn-primary" (click)="onEdit()">Edit Plan</button>
+  </div>
+</div>
